@@ -14,7 +14,7 @@ image = Image.open('image02.png')
 # Define the image transformations
 transform = transforms.Compose([
     transforms.ToTensor(),  # Convert PIL image to tensor
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalize the image
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalize the image using ImageNet mean and std
 ])
 
 # Apply the transformations to the image
@@ -29,8 +29,16 @@ with torch.no_grad():  # Disable gradient calculation
 
 # Extract the predicted bounding boxes, labels, and masks
 boxes = output[0]['boxes']  # Predicted bounding boxes
+labels = output[0]['labels']  # Predicted labels
 masks = output[0]['masks']  # Predicted masks
 
+# Filter out non-human objects
+human_indices = [i for i, label in enumerate(labels) if label == 949]  # 'human' has label 949 in ImageNet
+
+# Select bounding boxes, labels, and masks for humans only
+human_boxes = boxes[human_indices]
+human_labels = labels[human_indices]
+human_masks = masks[human_indices]
 
 # Rest of the code for visualization
 fig, ax = plt.subplots(1)
@@ -42,7 +50,7 @@ for i in range(len(boxes)):
 
     # Draw bounding box
     ax.add_patch(plt.Rectangle((box[0], box[1]), box[2] - box[0], box[3] - box[1], fill=False, color='red'))
-    
+
     # Apply mask
     masked_image = input_tensor[0].clone()
     mask = mask > 0.5
