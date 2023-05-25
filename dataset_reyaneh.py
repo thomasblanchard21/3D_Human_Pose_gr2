@@ -243,7 +243,6 @@ class H36_dataset(Dataset):
         
         return all_in_one_dataset_2d, all_in_one_dataset_3d , video_and_frame_paths
 
-
 if __name__ == "__main__" :
     
     import matplotlib.pyplot as plt
@@ -281,4 +280,5 @@ if __name__ == "__main__" :
         fig2.savefig(f"test_all_joints_{['x', 'y', 'z'][dim]}.png")
         plt.show()
         
+    
    

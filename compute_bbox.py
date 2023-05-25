@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import torchvision.transforms as transforms
 
+## MAYBE USE SOMETHING ELSE THAN MASK R-CNN FOR IMPROVEMENTS
+
 # Load the pre-trained model with the most up-to-date weights
-model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
+model = torchvision.models.detection.maskrcnn_resnet50_fpn(weights='DEFAULT', num_classes = 1)
 model.eval()
 
 # Load the image using PIL
@@ -29,8 +31,6 @@ with torch.no_grad():  # Disable gradient calculation
 
 # Extract the predicted bounding boxes, labels, and masks
 boxes = output[0]['boxes']  # Predicted bounding boxes
-labels = output[0]['labels']  # Predicted labels
-masks = output[0]['masks']  # Predicted masks
 
 # Filter out non-human objects
 human_indices = [i for i, label in enumerate(labels) if label == 949]  # 'human' has label 949 in ImageNet
