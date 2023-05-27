@@ -102,7 +102,7 @@ class Human36M:
         data = []
         for aid in db.anns.keys():
             ann = db.anns[aid]
-            image_id = ann['image_id']
+            image_id = ann['id']
             img = db.loadImgs(image_id)[0]
             img_width, img_height = img['width'], img['height']
            
@@ -136,15 +136,10 @@ class Human36M:
                 if bbox is None: continue
                 root_cam = joint_cam[self.root_idx]
 
-            if subaction_idx == 1:
-                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx // 4 + 1)) + '.jpg'
-            elif subaction_idx == 2:
-                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx // 4 + 1)) + '.jpg'
-            elif subaction_idx == 3:
-                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx // 4 + 1)) + '.jpg'
+            img_path = self.get_image_path(subject, action_name, subaction_idx, cam_idx, frame_idx)
                
             # REMEMBER TO DELETE CONDITIONS FOR FULL DATASET   
-            if subject == 1:
+            if subject == 5:
                 if action_idx == 2:
                     data.append({
                         'img_path': img_path,
@@ -238,3 +233,76 @@ class Human36M:
         with open(output_path, 'w') as f:
             json.dump(pred_save, f)
         print("Test result is saved at " + output_path)
+
+
+
+    def get_image_path(self, subject, action_name, subaction_idx, cam_idx, frame_idx):
+
+        if subject == 1:
+            if action_name in ['Eating', 'Sitting', 'SittingDown'] and subaction_idx == 2:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            elif subaction_idx == 2 or action_name == 'Sitting':
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            else:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            return img_path
+        
+        elif subject == 5:
+            if action_name == 'Discussion' and subaction_idx == 2:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 3' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            elif (action_name in ['Directions', 'Greeting', 'Photo', 'Waiting'] and subaction_idx == 2) or action_name == 'Discussion':
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            elif subaction_idx == 2 or action_name in ['Directions', 'Greeting', 'Waiting']:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            else:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            return img_path
+
+        elif subject == 6:
+            if action_name == 'Waiting' and subaction_idx == 2:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 3' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            elif subaction_idx == 2 and action_name in ['Eating', 'Posing', 'Sitting']:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            elif subaction_idx == 2 or  action_name in ['Eating', 'Sitting']:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            else:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            return img_path 
+        
+        elif subject == 7:
+            if action_name in ['Phoning', 'Waiting', 'Walking'] and subaction_idx == 2:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            elif subaction_idx == 2 or action_name in ['Waiting', 'Walking']:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            else:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            return img_path
+        
+        elif subject == 8:
+            if action_name == 'WalkTogether' and subaction_idx == 2:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            elif subaction_idx == 2 or action_name == 'WalkTogether':
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            else:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            return img_path
+        
+        elif subject == 9:
+            if action_name == 'Discussion' and subaction_idx == 2:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            elif subaction_idx == 2 or action_name == 'Discussion':
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            else:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            return img_path
+
+        elif subject == 11:
+            if action_name == 'Phoning' and subaction_idx == 2:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 3' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            elif (action_name in ['Discussion', 'Greeting', 'Smoking'] and subaction_idx == 2) or action_name == 'Phoning':
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            elif subaction_idx == 2 or action_name == 'Discussion':
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            else:
+                img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
+            return img_path
