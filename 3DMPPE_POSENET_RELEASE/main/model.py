@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-from nets.resnet import ResNetBackbone
-from config import cfg
+from common.nets.resnet import ResNetBackbone
+from main.config import cfg
 
 class HeadNet(nn.Module):
 
@@ -67,9 +67,14 @@ def soft_argmax(heatmaps, joint_num):
     accu_y = heatmaps.sum(dim=(2,4))
     accu_z = heatmaps.sum(dim=(3,4))
 
-    accu_x = accu_x * torch.arange(cfg.output_shape[1]).float().cuda()[None,None,:]
-    accu_y = accu_y * torch.arange(cfg.output_shape[0]).float().cuda()[None,None,:]
-    accu_z = accu_z * torch.arange(cfg.depth_dim).float().cuda()[None,None,:]
+    if torch.cuda.is_available():
+        accu_x = accu_x * torch.arange(cfg.output_shape[1]).float().cuda()[None,None,:]
+        accu_y = accu_y * torch.arange(cfg.output_shape[0]).float().cuda()[None,None,:]
+        accu_z = accu_z * torch.arange(cfg.depth_dim).float().cuda()[None,None,:]
+    else:
+        accu_x = accu_x * torch.arange(cfg.output_shape[1]).float()[None,None,:]
+        accu_y = accu_y * torch.arange(cfg.output_shape[0]).float()[None,None,:]
+        accu_z = accu_z * torch.arange(cfg.depth_dim).float()[None,None,:]
 
     accu_x = accu_x.sum(dim=2, keepdim=True)
     accu_y = accu_y.sum(dim=2, keepdim=True)
