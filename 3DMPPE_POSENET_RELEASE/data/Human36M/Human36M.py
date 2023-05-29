@@ -16,7 +16,7 @@ class Human36M:
         self.data_split = data_split
         self.img_dir = "/work/scitas-share/datasets/Vita/civil-459/h3.6/videos/"
         self.annot_path = "/home/bonnassi/firstTest/DLAV/3DMPPE_ROOTNET_RELEASE/data/Human36M/annotations/"
-        self.human_bbox_root_dir = "/home/bonnassi/firstTest/DLAV/3DMPPE_ROOTNET_RELEASE/data/Human36M/bbox/bbox_human36m_output.json"
+        self.human_bbox_root_dir = "/home/bonnassi/firstTest/DLAV/3DMPPE_ROOTNET_RELEASE/data/Human36M/bbox/bbox_root_human36m_output.json"
         self.joint_num = 18 # original:17, but manually added 'Thorax'
         self.joints_name = ('Pelvis', 'R_Hip', 'R_Knee', 'R_Ankle', 'L_Hip', 'L_Knee', 'L_Ankle', 'Torso', 'Neck', 'Nose', 'Head', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'Thorax')
         self.flip_pairs = ( (1, 4), (2, 5), (3, 6), (14, 11), (15, 12), (16, 13) )
@@ -127,7 +127,7 @@ class Human36M:
             joint_img[:,2] = joint_img[:,2] - joint_cam[self.root_idx,2]
             joint_vis = np.ones((self.joint_num,1))
             
-            # bbox load
+            # bbox and root load
             if self.data_split == 'test' and not cfg.use_gt_info:
                 bbox = bbox_root_result[str(image_id)]['bbox'] # bbox should be aspect ratio preserved-extended. It is done in RootNet.
                 root_cam = bbox_root_result[str(image_id)]['root']
