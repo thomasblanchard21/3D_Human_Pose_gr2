@@ -15,8 +15,8 @@ class Human36M:
         self.camera_ids = [".54138969", ".55011271", ".58860488",  ".60457274" ]
         self.data_split = data_split
         self.img_dir = "/work/scitas-share/datasets/Vita/civil-459/h3.6/videos/"
-        self.annot_path = "/data/Human36M/annotations/"
-        self.human_bbox_dir = "data/Human36M/bbox/bbox_human36m_output.json"
+        self.annot_path = "./data/Human36M/annotations/"
+        self.human_bbox_dir = "./data/Human36M/bbox/bbox_human36m_output.json"
         self.joint_num = 17
         self.joints_name = ('Pelvis', 'R_Hip', 'R_Knee', 'R_Ankle', 'L_Hip', 'L_Knee', 'L_Ankle', 'Torso', 'Neck', 'Nose', 'Head', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'R_Shoulder', 'R_Elbow', 'R_Wrist')
         self.root_idx = self.joints_name.index('Pelvis')
