@@ -58,8 +58,12 @@ class RootNet(nn.Module):
         hm_x = xy.sum(dim=(2))
         hm_y = xy.sum(dim=(3))
 
-        coord_x = hm_x * torch.arange(cfg.output_shape[1]).float().cuda()
-        coord_y = hm_y * torch.arange(cfg.output_shape[0]).float().cuda()
+        if torch.cuda.is_available():
+            coord_x = hm_x * torch.arange(cfg.output_shape[1]).float().cuda()
+            coord_y = hm_y * torch.arange(cfg.output_shape[0]).float().cuda()
+        else:
+            coord_x = hm_x * torch.arange(cfg.output_shape[1]).float()
+            coord_y = hm_y * torch.arange(cfg.output_shape[0]).float()
         
         coord_x = coord_x.sum(dim=2)
         coord_y = coord_y.sum(dim=2)

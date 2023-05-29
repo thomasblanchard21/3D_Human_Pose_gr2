@@ -47,8 +47,12 @@ model_path = './snapshot_%d.pth.tar' % int(args.test_epoch)
 assert osp.exists(model_path), 'Cannot find model at ' + model_path
 print('Load checkpoint from {}'.format(model_path))
 model = get_pose_net(cfg, False)
-model = DataParallel(model).cuda()
-ckpt = torch.load(model_path)
+if torch.cuda.is_available():
+    model = DataParallel(model).cuda()
+    ckpt = torch.load(model_path)
+else:
+    model = DataParallel(model)
+    ckpt = torch.load(model_path, map_location=torch.device('cpu'))
 model.load_state_dict(ckpt['network'])
 model.eval()
 
@@ -77,9 +81,15 @@ print('principal points: (' + str(princpt[0]) + ', ' + str(princpt[1]) + ')')
 for n in range(person_num):
     bbox = process_bbox(np.array(bbox_list[n]), original_img_width, original_img_height)
     img, img2bb_trans = generate_patch_image(original_img, bbox, False, 0.0) 
-    img = transform(img).cuda()[None,:,:,:]
+    if torch.cuda.is_available():
+        img = transform(img).cuda()[None,:,:,:]
+    else:
+        img = transform(img)[None,:,:,:]
     k_value = np.array([math.sqrt(cfg.bbox_real[0]*cfg.bbox_real[1]*focal[0]*focal[1]/(bbox[2]*bbox[3]))]).astype(np.float32)
-    k_value = torch.FloatTensor([k_value]).cuda()[None,:]
+    if torch.cuda.is_available():
+        k_value = torch.FloatTensor([k_value]).cuda()[None,:]
+    else:
+        k_value = torch.FloatTensor([k_value])[None,:]
 
     # forward
     with torch.no_grad():

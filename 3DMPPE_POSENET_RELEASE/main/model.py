@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-from common.nets.resnet import ResNetBackbone
-from main.config import cfg
+from nets.resnet import ResNetBackbone
+from config import cfg
 
 class HeadNet(nn.Module):
 

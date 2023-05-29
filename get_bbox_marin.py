@@ -3,7 +3,7 @@ import math
 from PIL import Image
 import requests
 import matplotlib.pyplot as plt
-%config InlineBackend.figure_format = 'retina'
+#%config InlineBackend.figure_format = 'retina'
 
 import ipywidgets as widgets
 from IPython.display import display, clear_output
@@ -88,8 +88,7 @@ def plot_results(pil_img, prob, boxes):
 model = torch.hub.load('facebookresearch/detr', 'detr_resnet50', pretrained=True)
 model.eval();
 
-url = 'http://images.cocodataset.org/val2017/000000039769.jpg'
-img_path = 'drive/MyDrive/Colab Notebooks/soccer.png'
+img_path = "C:/Users/thoma/OneDrive/Documents/EPFL/MA2/Deep Learning for Autonomous Vehicles/DLAV/photo.jpg"
 im = Image.open(img_path)
 
 # mean-std normalize the input image (batch-size: 1)
@@ -104,17 +103,20 @@ outputs = model(img)
 
 person_class_index = 1
 probas = outputs['pred_logits'].softmax(-1)[0, :, :-1]
-keep = (probas[:, person_class_index] > 0.8).nonzero().squeeze(1)
+keep = (probas[:, person_class_index] > 0.95).nonzero().squeeze(1)
 person_boxes = outputs['pred_boxes'][0, keep]
 
 # convert boxes from [0; 1] to image scales
 bboxes_scaled = rescale_bboxes(person_boxes, im.size)
 
 # for json file
-
+bboxes_scaled_for_json = rescale_bboxes_wh(person_boxes, im.size)
 numpy_array = bboxes_scaled_for_json.numpy()
 python_list = numpy_array.tolist()
-with open("drive/MyDrive/Colab Notebooks/bbox_human36m_output.json", "w") as json_file:
+with open("3DMPPE_POSENET_RELEASE/data/Human36M/bbox/bbox_human36m_output.json", "w") as json_file:
+    json.dump(python_list, json_file, indent=4)
+
+with open("3DMPPE_ROOTNET_RELEASE/data/Human36M/bbox/bbox_human36m_output.json", "w") as json_file:
     json.dump(python_list, json_file, indent=4)
 
 

@@ -53,8 +53,13 @@ model_path = './snapshot_%d.pth.tar' % int(args.test_epoch)
 assert osp.exists(model_path), 'Cannot find model at ' + model_path
 print('Load checkpoint from {}'.format(model_path))
 model = get_pose_net(cfg, False, joint_num)
-model = DataParallel(model).cuda()
-ckpt = torch.load(model_path)
+
+if torch.cuda.is_available():
+    model = DataParallel(model).cuda()
+    ckpt = torch.load(model_path)
+else:
+    model = DataParallel(model)
+    ckpt = torch.load(model_path, map_location=torch.device('cpu'))
 model.load_state_dict(ckpt['network'])
 model.eval()
 
@@ -87,7 +92,10 @@ output_pose_3d_list = []
 for n in range(person_num):
     bbox = process_bbox(np.array(bbox_list[n]), original_img_width, original_img_height)
     img, img2bb_trans = generate_patch_image(original_img, bbox, False, 1.0, 0.0, False) 
-    img = transform(img).cuda()[None,:,:,:]
+    if torch.cuda.is_available():
+        img = transform(img).cuda()[None,:,:,:]
+    else:
+        img = transform(img)[None,:,:,:]
 
     # forward
     with torch.no_grad():
