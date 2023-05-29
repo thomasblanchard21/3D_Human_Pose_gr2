@@ -11,7 +11,7 @@ class RootNet(nn.Module):
         self.outplanes = 256
 
         super(RootNet, self).__init__()
-       	self.deconv_layers = self._make_deconv_layer(3)
+        self.deconv_layers = self._make_deconv_layer(3)
         self.xy_layer = nn.Conv2d(
             in_channels=self.outplanes,
             out_channels=1,
