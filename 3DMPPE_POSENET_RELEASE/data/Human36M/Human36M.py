@@ -139,19 +139,17 @@ class Human36M:
             img_path = self.get_image_path(subject, action_name, subaction_idx, cam_idx, frame_idx)
                
             # REMEMBER TO DELETE CONDITIONS FOR FULL DATASET   
-            if subject == 5:
-                if action_idx == 2:
-                    data.append({
-                        'img_path': img_path,
-                        'img_id': image_id,
-                        'bbox': bbox,
-                        'joint_img': joint_img, # [org_img_x, org_img_y, depth - root_depth]
-                        'joint_cam': joint_cam, # [X, Y, Z] in camera coordinate
-                        'joint_vis': joint_vis,
-                        'root_cam': root_cam, # [X, Y, Z] in camera coordinate
-                        'f': f,
-                        'c': c
-                    })
+            data.append({
+                'img_path': img_path,
+                'img_id': image_id,
+                'bbox': bbox,
+                'joint_img': joint_img, # [org_img_x, org_img_y, depth - root_depth]
+                'joint_cam': joint_cam, # [X, Y, Z] in camera coordinate
+                'joint_vis': joint_vis,
+                'root_cam': root_cam, # [X, Y, Z] in camera coordinate
+                'f': f,
+                'c': c
+            })
            
         return data
 
@@ -239,9 +237,9 @@ class Human36M:
     def get_image_path(self, subject, action_name, subaction_idx, cam_idx, frame_idx):
 
         if subject == 1:
-            if action_name in ['Eating', 'Sitting', 'SittingDown'] and subaction_idx == 2:
+            if (action_name in ['Eating', 'SittingDown'] and subaction_idx == 1) or (subaction_idx == 2 and action_name == 'Sitting'):
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
-            elif subaction_idx == 2 or action_name == 'Sitting':
+            elif subaction_idx == 1:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             else:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
@@ -252,27 +250,27 @@ class Human36M:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 3' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             elif (action_name in ['Directions', 'Greeting', 'Photo', 'Waiting'] and subaction_idx == 2) or action_name == 'Discussion':
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
-            elif subaction_idx == 2 or action_name in ['Directions', 'Greeting', 'Waiting']:
+            elif (subaction_idx == 1 and action_name not in ['SittingDown', 'Photo']) or (subaction_idx == 2 and action_name == 'SittingDown'):
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             else:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             return img_path
 
         elif subject == 6:
-            if action_name == 'Waiting' and subaction_idx == 2:
+            if action_name == 'Waiting' and subaction_idx == 1:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 3' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
-            elif subaction_idx == 2 and action_name in ['Eating', 'Posing', 'Sitting']:
+            elif (subaction_idx == 2 and action_name in ['Eating', 'Sitting']) or (subaction_idx == 1 and action_name == 'Posing'):
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
-            elif subaction_idx == 2 or  action_name in ['Eating', 'Sitting']:
+            elif (subaction_idx == 1 and action_name != 'Photo') or (action_name == 'Photo' and subaction_idx == 2):
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             else:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             return img_path 
         
         elif subject == 7:
-            if action_name in ['Phoning', 'Waiting', 'Walking'] and subaction_idx == 2:
+            if (action_name in ['Waiting', 'Walking'] and subaction_idx == 2) or (action_name == 'Phoning' and subaction_idx == 1):
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
-            elif subaction_idx == 2 or action_name in ['Waiting', 'Walking']:
+            elif (subaction_idx == 1 and action_name not in ['Photo', 'SittingDown']) or (subaction_idx == 2 and action_name in ['Photo', 'SittingDown']):
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             else:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
@@ -281,7 +279,7 @@ class Human36M:
         elif subject == 8:
             if action_name == 'WalkTogether' and subaction_idx == 2:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
-            elif subaction_idx == 2 or action_name == 'WalkTogether':
+            elif (subaction_idx == 1 and action_name != 'SittingDown') or (subaction_idx == 2 and action_name == 'SittingDown'):
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             else:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
@@ -290,18 +288,18 @@ class Human36M:
         elif subject == 9:
             if action_name == 'Discussion' and subaction_idx == 2:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
-            elif subaction_idx == 2 or action_name == 'Discussion':
+            elif (subaction_idx == 1 and action_name != 'SittingDown') or (subaction_idx == 2 and action_name == 'SittingDown'):
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             else:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             return img_path
 
         elif subject == 11:
-            if action_name == 'Phoning' and subaction_idx == 2:
+            if action_name == 'Phoning' and subaction_idx == 1:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 3' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
-            elif (action_name in ['Discussion', 'Greeting', 'Smoking'] and subaction_idx == 2) or action_name == 'Phoning':
+            elif (action_name in ['Discussion', 'Phoning'] and subaction_idx == 2) or (action_name in ['Greeting','Smoking'] and subaction_idx == 1):
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 2' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
-            elif subaction_idx == 2 or action_name == 'Discussion':
+            elif (subaction_idx == 1 and action_name != 'SittingDown') or (subaction_idx == 2 and action_name == 'SittingDown'):
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + ' 1' + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
             else:
                 img_path = self.img_dir + 'S' + str(subject) + '/outputVideos/' + action_name + self.camera_ids[cam_idx-1] + '.mp4/' + str('{:04d}'.format(frame_idx + 1)) + '.jpg'
