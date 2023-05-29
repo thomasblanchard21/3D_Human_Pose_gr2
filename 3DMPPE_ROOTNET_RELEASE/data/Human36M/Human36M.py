@@ -126,19 +126,17 @@ class Human36M:
             img_path = self.get_image_path(subject, action_name, subaction_idx, cam_idx, frame_idx)
 
             # REMEMBER TO DELETE CONDITIONS FOR FULL DATASET   
-            if subject == 5:
-                if action_idx == 2:
-                    data.append({
-                        'img_path': img_path,
-                        'img_id': image_id,
-                        'bbox': bbox,
-                        'area': area,
-                        'root_img': root_img, # [org_img_x, org_img_y, depth]
-                        'root_cam': root_cam,
-                        'root_vis': root_vis,
-                        'f': f,
-                        'c': c
-                    })
+            data.append({
+                'img_path': img_path,
+                'img_id': image_id,
+                'bbox': bbox,
+                'area': area,
+                'root_img': root_img, # [org_img_x, org_img_y, depth]
+                'root_cam': root_cam,
+                'root_vis': root_vis,
+                'f': f,
+                'c': c
+            })
 
         return data
 
