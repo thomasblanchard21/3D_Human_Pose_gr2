@@ -15,7 +15,8 @@ class HeadNet(nn.Module):
         self.deconv_layers = self._make_deconv_layer(3)
         self.final_layer = nn.Conv2d(
             in_channels=self.inplanes,
-            out_channels=joint_num * cfg.depth_dim,
+            # out_channels=joint_num * cfg.depth_dim,
+            out_channels=1344,
             kernel_size=1,
             stride=1,
             padding=0
