@@ -107,7 +107,7 @@ class Human36M:
             R,t,f,c = np.array(cam_param['R'], dtype=np.float32), np.array(cam_param['t'], dtype=np.float32), np.array(cam_param['f'], dtype=np.float32), np.array(cam_param['c'], dtype=np.float32)
                 
             # project world coordinate to cam, image coordinate space
-            action_idx = img['action_idx']; subaction_idx = img['subaction_idx']; action_name = img['action_name']; frame_idx = img['frame_idx']
+            action_idx = img['action_idx']; subaction_idx = img['subaction_idx']; action_name = img['action_name']
             root_world = np.array(joints[str(subject)][str(action_idx)][str(subaction_idx)][str(frame_idx)], dtype=np.float32)[self.root_idx]
             root_cam = world2cam(root_world[None,:], R, t)[0]
             root_img = cam2pixel(root_cam[None,:], f, c)[0]
@@ -165,13 +165,17 @@ class Human36M:
             pred_root = pixel2cam(pred_root[None,:], f, c)[0]
 
             # prediction save
-            img_id = gt['img_id']
+            img_id = gt['id']
             pred_save.append({'image_id': img_id, 'bbox': bbox.tolist(), 'root_cam': pred_root.tolist()})
 
             # error calculate
             error[n] = (pred_root - gt_root)**2
             img_name = gt['img_path']
-            action_idx = int(img_name[img_name.find('act')+4:img_name.find('act')+6]) - 2
+
+            act_name = img_name.split('/')[-2]
+            act_name = act_name.split('.')[0]
+
+            action_idx = self.action_name.index(str(act_name))
             error_action[action_idx].append(error[n].copy())
 
         # total error

@@ -47,6 +47,7 @@ model_path = './snapshot_%d.pth.tar' % int(args.test_epoch)
 assert osp.exists(model_path), 'Cannot find model at ' + model_path
 print('Load checkpoint from {}'.format(model_path))
 model = get_pose_net(cfg, False)
+print(cfg.output_shape)
 if torch.cuda.is_available():
     model = DataParallel(model).cuda()
     ckpt = torch.load(model_path)

@@ -208,7 +208,9 @@ class Human36M:
             # error calculate
             error[n] = np.sqrt(np.sum((pred_3d_kpt - gt_3d_kpt)**2,1))
             img_name = gt['img_path']
-            action_idx = int(img_name[img_name.find('act')+4:img_name.find('act')+6]) - 2
+            act_name = img_name.split('/')[-2]
+            act_name = act_name.split('.')[0]
+            action_idx = self.action_name.index(str(act_name))
             error_action[action_idx].append(error[n].copy())
 
             # prediction save
