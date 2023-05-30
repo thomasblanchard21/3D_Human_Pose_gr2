@@ -165,7 +165,7 @@ class Human36M:
             pred_root = pixel2cam(pred_root[None,:], f, c)[0]
 
             # prediction save
-            img_id = gt['id']
+            img_id = gt['img_id']
             pred_save.append({'image_id': img_id, 'bbox': bbox.tolist(), 'root_cam': pred_root.tolist()})
 
             # error calculate
