@@ -8,6 +8,7 @@ import cv2
 import random
 import json
 from utils.vis import vis_keypoints, vis_3d_skeleton
+import re
 
 class Human36M:
     def __init__(self, data_split):
@@ -208,8 +209,14 @@ class Human36M:
             # error calculate
             error[n] = np.sqrt(np.sum((pred_3d_kpt - gt_3d_kpt)**2,1))
             img_name = gt['img_path']
-            act_name = img_name.split('/')[-2]
-            act_name = act_name.split('.')[0]
+            if ' ' in img_name:
+                act_name = re.search(r'/([^/]+)\s', i).group(1)
+            else:
+                act_name = img_name.split('/')[-2]
+                act_name = act_name.split('.')[0]
+
+            action_idx = self.action_name.index(str(act_name))
+            error_action[action_idx].append(error[n].copy())
             action_idx = self.action_name.index(str(act_name))
             error_action[action_idx].append(error[n].copy())
 
