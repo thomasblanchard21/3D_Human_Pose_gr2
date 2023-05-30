@@ -174,7 +174,7 @@ class Human36M:
             img_name = gt['img_path']
 
             if ' ' in img_name:
-                act_name = re.search(r'/([^/]+)\s', i).group(1)
+                act_name = re.search(r'/([^/]+)\s', img_name).group(1)
             else:
                 act_name = img_name.split('/')[-2]
                 act_name = act_name.split('.')[0]
