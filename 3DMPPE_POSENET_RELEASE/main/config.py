@@ -47,7 +47,7 @@ class Config:
     ## testing config
     test_batch_size = 32
     flip_test = True
-    use_gt_info = True
+    use_gt_info = False
 
     ## others
     num_thread = 8
