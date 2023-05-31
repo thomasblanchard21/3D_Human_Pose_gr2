@@ -27,6 +27,8 @@ Before training or testing RootNet or PoseNet, you must adapt the paths for `sel
 
 To use your own bounding boxes, you must place them in the `bbox` folder in `/data/Human36M/` according to the CoCo annotations format.
 
+For more details on how to train each model, please refer to the README.md file in the corresponding folder.
+
 ## Results
 
 ## Conclusion
