@@ -1,5 +1,9 @@
 # DLAV
 
+<p align="center">
+<img src="examples/handball.jpg" width="512" height="288"> <img src="examples/handball3d.png"width="384" height="288">
+</p>
+
 ## Overview
 
 This repository was made for the Deep Learning for Autonomous Vehicles course at EPFL. The task of this project is 3D Human Pose Estimation from a single RGB camera as implemented in the paper "Camera Distance-aware Top-down Approach for 3D Multi-person Pose Estimation from a Single RGB Image" (https://arxiv.org/pdf/1907.11346v2.pdf). 
