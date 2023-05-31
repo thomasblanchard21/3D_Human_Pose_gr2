@@ -18,7 +18,7 @@ The script will split the video into frames and place the images in a folder cal
 
 ## Experiments
 
-As shown below, we noticed that the inference time was dominated by the DetectNet module. Autonomous vehicles require real-time performance so we decided to try replacing the original architecture (Mask R-CNN) by a DETR (DEtection TRansformer) architecure. We decided to focus primarily on the 3D detection part so we used pretrained weights for DetectNet.
+As shown below, we noticed that the inference time was dominated by the DetectNet module. Autonomous vehicles require real-time performance so we decided to try replacing the original architecture (Mask R-CNN) by a DETR (DEtection TRansformer) architecure. We decided to focus primarily on the 3D detection part so we used pretrained weights for DetectNet and to train RootNet and PoseNet.
 
 <p align="center">
 <img src="metrics/inference_time.png" width="400" height="100">
