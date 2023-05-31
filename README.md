@@ -16,7 +16,7 @@ The script will split the video into frames and place the images in a folder cal
 
 ## Dataset
 
-We have used the dataset Human 3.6M for this task as it provides a very large amount of data and 3D annotations. As it is too large to be handled on a regular computer, we used scitas to access the data. However, we used an external source for the annotations as explained in the `training` section.
+We have used the dataset Human 3.6M for this task as it provides a very large amount of data and 3D annotations. It is too large to be handled on a personal computer so we used scitas to access the data. However, we used an external source for the annotations as explained in the `training` section. For practical reasons, we changed to model to use exculsively information from the Human3.6M dataset instead of a combination of that and MPII.
 
 ## Training
 
