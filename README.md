@@ -48,6 +48,8 @@ First of all we implemented the DeTR method to get the bounding boxes for each p
 
 We trained RootNet for 9 epochs instead of 20 for the original paper for practical reasons, which could explain a gap in performance. We used the following training parameters: a learning rate starting at 1e-3 decaying by a factor of 10 between each epoch after the 17th one, with a batch size of 32, using the Adam optimizer. The decaying learning rate theoretically allows faster convergence and more stability than a fixed learning rate. 
 
+The trained weights for RootNet with ground truth bounding boxes can be downloaded here: https://drive.google.com/file/d/1AAdEfCNW6KB-B9xRiCe6lS7ML5ptgnXF/view?usp=sharing
+
 <p align="center">
 <img src="metrics/MRPE_comparison.png">
 </p>
@@ -56,11 +58,15 @@ We can see that the performance on RootNet is a bit worse than the original pape
 
 For PoseNet, we used 12 epochs instead of 25, again for practical reasons, which shows a big performance gap between our trained model and the pretrained one. We again used a decaying learning rate, starting at 1e-3 and decaying by a factor of 10 between each epoch after the 17th one, then by a factor of 100 after the 21st one for better stability. We used the Adam optimizer and a batch size of 32 as previously.
 
+The trained weights for PoseNet with ground truth bounding boxes and root depth can be downloaded here: https://drive.google.com/file/d/1vf7Vjy8niXtLasEDRde4O9P-cMDnxeIA/view?usp=sharing
+
 <p align="center">
 <img src="metrics/MPJPE_comparison_posenet.png">
 </p>
 
 The table below shows the performance for the total project, using our own bounding boxes and root depth from the trained RootNet. The performance is close to the results from the ground truth root depth, indicating that a better training for PoseNet would greatly impact the overall performance.
+
+The trained weights for PoseNet with ground truth bounding boxes and root depth from RootNet can be downloaded here: https://drive.google.com/file/d/15DgYuc2nEvYoYmcQln7GA_dkeqUMolP1/view?usp=sharing
 
 <p align="center">
 <img src="metrics/MPJPE_comparison_total.png">
