@@ -8,7 +8,7 @@ The model uses three networks for this task. The first one is called DetecNet an
 
 ## Usage
 
-Run `inference.sh video` where video is the name of the video you want to use in .mp4 format. You can change the trained weights you want to use in the script by changing the `--test_epoch xx` number for weights in this format: `snapshot_xx.pth.tar`. The current version is using pretrained weights from the MuCo dataset but you can alternatively change `inference_posenet_MuCo` to `inference_posenet_Human36M` in the inference script to use weights trained with this code.
+Run the `inference.sh video` script, where video is the name of the video you want to use in .mp4 format. You can change the trained weights you want to use in the script by changing the `--test_epoch xx` number for weights in this format: `snapshot_xx.pth.tar`. The current version is using pretrained weights from the MuCo dataset but you can alternatively change `inference_posenet_MuCo` to `inference_posenet_Human36M` in the inference script to use weights trained with this code.
 
 The script will split the video into frames and place the images in a folder called `frames`. For each frame in `frames`, it will compute the bounding boxes and place them in `bboxes`. It will then run the image through RootNet and compute the absolute root position using the bbox information and place the result in `3DMPPE_ROOTNET_RELEASE/output/result`. Finally, it will run the image through PoseNet and compute the complete 3D skeleton. The 2D visualization is placed in `3DMPPE_POSENET_RELEASE/output/vis`. You can enable 3D visualization by uncommenting the last 2 lines in the `inference_posenet_xx.py` file.
 
