@@ -4,7 +4,7 @@
 
 This repository was made for the Deep Learning for Autonomous Vehicles course at EPFL. The task of this project is 3D Human Pose Estimation from a single RGB camera as implemented in the paper "Camera Distance-aware Top-down Approach for 3D Multi-person Pose Estimation from a Single RGB Image" (https://arxiv.org/pdf/1907.11346v2.pdf). 
 
-The model uses three networks for this task. The first one is called DetecNet and is used to compute the bounding boxes around each person in the frame. They are then fed to the second network called RootNet that estimates the absolute position of the root of each person. Finally, the third network called PoseNet uses the bounding boxes to estimate the relative 3D position of all the joints for every subject and uses the absolute root position from RootNet to output the absolute 3D pose estimation.
+The model uses three networks for this task. The first one is called DetecNet and is used to compute the bounding boxes around each person in the frame. They are then fed to the second network called RootNet that estimates the absolute position of the root of each person. Finally, the third network called PoseNet uses the bounding boxes to estimate the relative 3D position of all the joints for every subject and uses the absolute root position from RootNet to output the absolute 3D pose estimation. As shown below, we noticed that the inference time was dominated by the DetectNet module. Autonomous vehicles require real-time performance so we decided to replace the original architecture (Mask R-CNN) by a faster DETR (DEtection TRansformer) architecure. 
 
 ## Usage
 
@@ -57,6 +57,8 @@ The table below shows the performance for the total project, using our own bound
 ## Conclusion
 
 ## References
+
+Original model data: https://paperswithcode.com/paper/camera-distance-aware-top-down-approach-for/review/?hl=57519
 
 @InProceedings{Moon_2019_ICCV_3DMPPE,
 author = {Moon, Gyeongsik and Chang, Juyong and Lee, Kyoung Mu},
