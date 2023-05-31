@@ -4,7 +4,8 @@ from PIL import Image
 import requests
 import matplotlib.pyplot as plt
 #%config InlineBackend.figure_format = 'retina'
-import time
+import os
+import re
 
 import ipywidgets as widgets
 from IPython.display import display, clear_output
@@ -18,7 +19,7 @@ torch.set_grad_enabled(False);
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--frame', type=str, dest='frame')
+    parser.add_argument('--frames', type=str, dest='frame')
     args = parser.parse_args()
 
     return args
@@ -100,41 +101,38 @@ model = torch.hub.load('facebookresearch/detr', 'detr_resnet50', pretrained=True
 model.eval();
 
 
-img_path = str(args.frame)
-im = Image.open(img_path)
+imgs_path = str(args.frame)
 
-# mean-std normalize the input image (batch-size: 1)
-img = transform(im).unsqueeze(0)
+for filename in os.listdir(imgs_path):
+    if filename.endswith('.jpg'):
+        image_path = os.path.join(imgs_path, filename)
 
-start_time = time.time()
-print(start_time)
+        im = Image.open(image_path)
 
-# propagate through the model
-outputs = model(img)
+        # mean-std normalize the input image (batch-size: 1)
+        img = transform(im).unsqueeze(0)
 
-end_time = time.time()
-print(end_time)
+        # propagate through the model
+        outputs = model(img)
 
-print(end_time - start_time)
+        # keep only predictions with 0.7+ confidence
+        #probas = outputs['pred_logits'].softmax(-1)[0, :, :-1]
+        #keep = probas.max(-1).values > 0.9
 
-# keep only predictions with 0.7+ confidence
-#probas = outputs['pred_logits'].softmax(-1)[0, :, :-1]
-#keep = probas.max(-1).values > 0.9
+        person_class_index = 1
+        probas = outputs['pred_logits'].softmax(-1)[0, :, :-1]
+        keep = (probas[:, person_class_index] > 0.99).nonzero().squeeze(1)
+        person_boxes = outputs['pred_boxes'][0, keep]
 
-person_class_index = 1
-probas = outputs['pred_logits'].softmax(-1)[0, :, :-1]
-keep = (probas[:, person_class_index] > 0.95).nonzero().squeeze(1)
-person_boxes = outputs['pred_boxes'][0, keep]
+        # convert boxes from [0; 1] to image scales
+        bboxes_scaled = rescale_bboxes(person_boxes, im.size)
 
-# convert boxes from [0; 1] to image scales
-bboxes_scaled = rescale_bboxes(person_boxes, im.size)
+        # for json file
+        bboxes_scaled_for_json = rescale_bboxes_wh(person_boxes, im.size)
+        numpy_array = bboxes_scaled_for_json.numpy()
+        python_list = numpy_array.tolist()
+        img_name = os.path.splitext(os.path.basename(image_path))[0]
+        with open(f"bboxes/bbox_output_{img_name}.json", "w") as json_file:
+            json.dump(python_list, json_file, indent=4)
 
-# for json file
-bboxes_scaled_for_json = rescale_bboxes_wh(person_boxes, im.size)
-numpy_array = bboxes_scaled_for_json.numpy()
-python_list = numpy_array.tolist()
-img_name = img_path.split("/")[-1].split(".")[0]
-with open(f"bboxes/bbox_output_{img_name}.json", "w") as json_file:
-    json.dump(python_list, json_file, indent=4)
-
-# plot_results(im, probas[keep], bboxes_scaled)
+        # plot_results(im, probas[keep], bboxes_scaled)

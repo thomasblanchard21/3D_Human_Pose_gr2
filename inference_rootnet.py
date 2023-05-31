@@ -61,67 +61,74 @@ model.eval()
 
 # prepare input image
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=cfg.pixel_mean, std=cfg.pixel_std)])
-img_path = str(args.frame)
-img_name = img_path.split("/")[-1].split(".")[0]
-original_img = cv2.imread(img_path)
-original_img_height, original_img_width = original_img.shape[:2]
+imgs_path = str(args.frame)
 
-# prepare bbox for each human
-bbox_path = f"bboxes/bbox_output_{img_name}.json"
+# Loop through all files in the folder
+for filename in os.listdir(imgs_path):
+    if filename.endswith('.jpg'):
+        # Process only image files
+        image_path = os.path.join(imgs_path, filename)
 
-with open(bbox_path) as f:
-    bbox_list = json.load(f)
-person_num = len(bbox_list)
+        img_name = os.path.splitext(os.path.basename(image_path))[0]
+        original_img = cv2.imread(image_path)
+        original_img_height, original_img_width = original_img.shape[:2]
 
-# normalized camera intrinsics
-focal = [1500, 1500] # x-axis, y-axis
-princpt = [original_img_width/2, original_img_height/2] # x-axis, y-axis
-# print('focal length: (' + str(focal[0]) + ', ' + str(focal[1]) + ')')
-# print('principal points: (' + str(princpt[0]) + ', ' + str(princpt[1]) + ')')
+        # prepare bbox for each human
+        bbox_path = f"bboxes/bbox_output_{img_name}.json"
 
-# for cropped and resized human image, forward it to RootNet
-root_depth_list = []
+        with open(bbox_path) as f:
+            bbox_list = json.load(f)
+        person_num = len(bbox_list)
 
-for n in range(person_num):
-    bbox = process_bbox(np.array(bbox_list[n]), original_img_width, original_img_height)
-    img, img2bb_trans = generate_patch_image(original_img, bbox, False, 0.0) 
-    if torch.cuda.is_available():
-        img = transform(img).cuda()[None,:,:,:]
-    else:
-        img = transform(img)[None,:,:,:]
-    k_value = np.array([math.sqrt(cfg.bbox_real[0]*cfg.bbox_real[1]*focal[0]*focal[1]/(bbox[2]*bbox[3]))]).astype(np.float32)
-    if torch.cuda.is_available():
-        k_value = torch.FloatTensor([k_value]).cuda()[None,:]
-    else:
-        k_value = torch.FloatTensor([k_value])[None,:]
+        # normalized camera intrinsics
+        focal = [1500, 1500] # x-axis, y-axis
+        princpt = [original_img_width/2, original_img_height/2] # x-axis, y-axis
+        # print('focal length: (' + str(focal[0]) + ', ' + str(focal[1]) + ')')
+        # print('principal points: (' + str(princpt[0]) + ', ' + str(princpt[1]) + ')')
 
-    # forward
-    with torch.no_grad():
-        root_3d = model(img, k_value) # x,y: pixel, z: root-relative depth (mm)
-    img = img[0].cpu().numpy()
-    root_3d = root_3d[0].cpu().numpy()
+        # for cropped and resized human image, forward it to RootNet
+        root_depth_list = []
 
-    root_depth_list.append(root_3d[2])
-    # print(root_3d)
+        for n in range(person_num):
+            bbox = process_bbox(np.array(bbox_list[n]), original_img_width, original_img_height)
+            img, img2bb_trans = generate_patch_image(original_img, bbox, False, 0.0) 
+            if torch.cuda.is_available():
+                img = transform(img).cuda()[None,:,:,:]
+            else:
+                img = transform(img)[None,:,:,:]
+            k_value = np.array([math.sqrt(cfg.bbox_real[0]*cfg.bbox_real[1]*focal[0]*focal[1]/(bbox[2]*bbox[3]))]).astype(np.float32)
+            if torch.cuda.is_available():
+                k_value = torch.FloatTensor(np.array([k_value])[None,:]).cuda()
+            else:
+                k_value = torch.FloatTensor(np.array([k_value])[None,:])
 
-    # # save output in 2D space (x,y: pixel)
-    # vis_img = img.copy()
-    # vis_img = vis_img * np.array(cfg.pixel_std).reshape(3,1,1) + np.array(cfg.pixel_mean).reshape(3,1,1)
-    # vis_img = vis_img.astype(np.uint8)
-    # vis_img = vis_img[::-1, :, :]
-    # vis_img = np.transpose(vis_img,(1,2,0)).copy()
-    # vis_root = np.zeros((2))
-    # vis_root[0] = root_3d[0] / cfg.output_shape[1] * cfg.input_shape[1]
-    # vis_root[1] = root_3d[1] / cfg.output_shape[0] * cfg.input_shape[0]
-    # cv2.circle(vis_img, (int(vis_root[0]), int(vis_root[1])), radius=5, color=(0,255,0), thickness=-1, lineType=cv2.LINE_AA)
-    # cv2.imwrite('output_root_2d_' + str(n) + '.jpg', vis_img)
-    
-    # print('Root joint depth: ' + str(root_3d[2]) + ' mm')
+            # forward
+            with torch.no_grad():
+                root_3d = model(img, k_value) # x,y: pixel, z: root-relative depth (mm)
+            img = img[0].cpu().numpy()
+            root_3d = root_3d[0].cpu().numpy()
 
-# print(root_depth_list)
-root_depth_list = [float(x) for x in root_depth_list]
+            root_depth_list.append(root_3d[2])
+            # print(root_3d)
 
-with open(f'3DMPPE_ROOTNET_RELEASE/output/result/root_depth_{img_name}.json', 'w') as f:
-    # Use the dump() function to write the list to the file
-    json.dump(root_depth_list, f)
+            # # save output in 2D space (x,y: pixel)
+            # vis_img = img.copy()
+            # vis_img = vis_img * np.array(cfg.pixel_std).reshape(3,1,1) + np.array(cfg.pixel_mean).reshape(3,1,1)
+            # vis_img = vis_img.astype(np.uint8)
+            # vis_img = vis_img[::-1, :, :]
+            # vis_img = np.transpose(vis_img,(1,2,0)).copy()
+            # vis_root = np.zeros((2))
+            # vis_root[0] = root_3d[0] / cfg.output_shape[1] * cfg.input_shape[1]
+            # vis_root[1] = root_3d[1] / cfg.output_shape[0] * cfg.input_shape[0]
+            # cv2.circle(vis_img, (int(vis_root[0]), int(vis_root[1])), radius=5, color=(0,255,0), thickness=-1, lineType=cv2.LINE_AA)
+            # cv2.imwrite('output_root_2d_' + str(n) + '.jpg', vis_img)
+            
+            # print('Root joint depth: ' + str(root_3d[2]) + ' mm')
+
+        # print(root_depth_list)
+        root_depth_list = [float(x) for x in root_depth_list]
+
+        with open(f'3DMPPE_ROOTNET_RELEASE/output/result/root_depth_{img_name}.json', 'w') as f:
+            # Use the dump() function to write the list to the file
+            json.dump(root_depth_list, f)
 
