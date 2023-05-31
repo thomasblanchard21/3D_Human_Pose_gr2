@@ -21,6 +21,7 @@ We have used the dataset Human 3.6M for this task as it provides a very large am
 ## Training
 
 For training or testing, you must download annotations.zip from Google Drive (you can delete everything after the .zip extension for extraction): https://drive.google.com/drive/folders/1r0B9I3XxIIW_jsXjYinDpL6NFcxTZart
+
 The .json files must be put in a folder named "annotations" in the same directory as Human36M.py. These files contain the annotations and the ground truth bounding boxes for the Human3.6M dataset. 
 
 Before training or testing RootNet or PoseNet, you must adapt the paths for `self.annot_path`, `self.human_bbox_dir` and `self.human_bbox_root_dir` in `data/Human36M/Human36M.py` with your own scitas directory. Please note that the image paths are adapted to the `h3.6` dataset on scitas only. If you want to use another location or classification of the dataset, you must change the corresponding paths in `data/Human36M/Human36M.py`.
@@ -31,13 +32,27 @@ For more details on how to train each model, please refer to the README.md file 
 
 ## Results
 
-<p align="center">
-<img src="MPJPE_comparison.png" width="800" height="300">
-</p>
+We trained RootNet for 9 epochs instead of 20 for the original paper for practical reasons, which could explain a gap in performance. We used the following training parameters: a learning rate starting at 1e-3 decaying by a factor of 10 between each epoch after the 17th one, with a batch size of 32, using the Adam optimizer. The decaying learning rate theoretically allows faster convergence and more stability than a fixed learning rate. 
 
 <p align="center">
-<img src="MRPE_comparison.png" width="800" height="300">
+<img src="metrics/MRPE_comparison.png">
 </p>
+
+We can see that the performance on RootNet is a bit worse than the original paper but still comparable.
+
+For PoseNet, we used 12 epochs instead of 25, again for practical reasons, which shows a big performance gap between our trained model and the pretrained one. We again used a decaying learning rate, starting at 1e-3 and decaying by a factor of 10 between each epoch after the 17th one, then by a factor of 100 after the 21st one for better stability. We used the Adam optimizer and a batch size of 32 as previously.
+
+<p align="center">
+<img src="metrics/MPJPE_comparison_posenet.png">
+</p>
+
+The table below shows the performance for the total project, using our own bounding boxes and root depth from the trained RootNet. The performance is close to the results from the ground truth root depth, indicating that a better training for PoseNet would greatly impact the overall performance.
+
+<p align="center">
+<img src="metrics/MPJPE_comparison_total.png">
+</p>
+
+
 
 ## Conclusion
 
