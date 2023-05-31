@@ -97,22 +97,25 @@ def plot_results(pil_img, prob, boxes):
     plt.show()
     
 model = torch.hub.load('facebookresearch/detr', 'detr_resnet50', pretrained=True)
-start_time = time.time()
-print(start_time)
 model.eval();
 
-end_time = time.time()
-print(end_time)
 
-print(end_time - start_time)
 img_path = str(args.frame)
 im = Image.open(img_path)
 
 # mean-std normalize the input image (batch-size: 1)
 img = transform(im).unsqueeze(0)
 
+start_time = time.time()
+print(start_time)
+
 # propagate through the model
 outputs = model(img)
+
+end_time = time.time()
+print(end_time)
+
+print(end_time - start_time)
 
 # keep only predictions with 0.7+ confidence
 #probas = outputs['pred_logits'].softmax(-1)[0, :, :-1]
