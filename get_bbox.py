@@ -101,6 +101,10 @@ start_time = time.time()
 print(start_time)
 model.eval();
 
+end_time = time.time()
+print(end_time)
+
+print(end_time - start_time)
 img_path = str(args.frame)
 im = Image.open(img_path)
 
@@ -130,8 +134,4 @@ img_name = img_path.split("/")[-1].split(".")[0]
 with open(f"bboxes/bbox_output_{img_name}.json", "w") as json_file:
     json.dump(python_list, json_file, indent=4)
 
-end_time = time.time()
-print(end_time)
-
-print(end_time - start_time)
 # plot_results(im, probas[keep], bboxes_scaled)
