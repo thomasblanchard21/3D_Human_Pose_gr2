@@ -31,6 +31,14 @@ For more details on how to train each model, please refer to the README.md file 
 
 ## Results
 
+<p align="center">
+<img src="MPJPE_comparison.png" width="800" height="300">
+</p>
+
+<p align="center">
+<img src="MRPE_comparison.png" width="800" height="300">
+</p>
+
 ## Conclusion
 
 ## References
