@@ -28,7 +28,7 @@ As shown below, we noticed that the inference time was dominated by the DetectNe
 
 We have used the dataset Human 3.6M for this task as it provides a very large amount of data and 3D annotations. It is too large to be handled on a personal computer so we used scitas to access the data. However, we used an external source for the annotations as explained in the `training` section. For practical reasons, we changed to model to use exculsively information from the Human3.6M dataset instead of a combination of that and MPII.
 
-The images from Human3.6M are ran through a preprocessing step to normalize them and give the right shape for input into the nets. This step is important because it allows the model to converge faster, helps it to avoid the vanishing gradient problem and makes it more robust to variations in the input data. We also ran data augmentation steps for training such as scaling, rotation, flip, color changes and occlusion to make the model more robust to noise and uncertainties.
+The images from Human3.6M are run through a preprocessing step to normalize them and give the right shape for input into the nets. This step is important because it allows the model to converge faster, helps it to avoid the vanishing gradient problem and makes it more robust to variations in the input data. This normalization is based on standard ImageNet normalization as it is a standard in the industry and yields good result, we could of course have obtained means and standard deviations for our specific dataset but it should not impact results much and thus was not done for efficiency reasons. We also ran data augmentation steps for training such as scaling, rotation, flip, color changes and occlusion to make the model more robust to noise and uncertainties.
 
 ## Training
 
@@ -43,6 +43,8 @@ To use your own bounding boxes, you must place them in the `bbox` folder in `/da
 For more details on how to train each model, please refer to the README.md file in the corresponding folder.
 
 ## Results
+
+First of all we implemented the DeTR method to get the bounding boxes for each person in the file get_bbox.py with pretrained weights as mentioned previously which yields excellent results in terms of accuracy.
 
 We trained RootNet for 9 epochs instead of 20 for the original paper for practical reasons, which could explain a gap in performance. We used the following training parameters: a learning rate starting at 1e-3 decaying by a factor of 10 between each epoch after the 17th one, with a batch size of 32, using the Adam optimizer. The decaying learning rate theoretically allows faster convergence and more stability than a fixed learning rate. 
 
@@ -64,11 +66,11 @@ The table below shows the performance for the total project, using our own bound
 <img src="metrics/MPJPE_comparison_total.png">
 </p>
 
-The implementation of the DETR architecture for DetectNet did not yield satsfying results compared to the Mask R-CNN architecture. However, the transformer architecture can still have advantages compared to other architectures, such as better flexibility (detecting humans in more various contexts, which could also be useful considering for in-the-wild scenarios), and a simpler training than most architectures.
+The implementation of the DETR architecture for DetectNet did not yield satsfying results compared to the Mask R-CNN architecture since it was slower. However, the transformer architecture can still have advantages compared to other architectures, such as better flexibility (detecting humans in more various contexts, which could also be useful considering for in-the-wild scenarios), and a simpler training than most architectures which are motivating factor for implementing and optimizing it.
 
 ## Conclusion
 
-Overall, our model does not perform as well as the one from the original paper. This could be due to too short trainings for the RootNet and PoseNet, or the use of only one dataset for training. The inference is also relatively slow, not making it very suitable for real-time applications such as autonomous driving. During this project, we learned to tune a deep learning model, understanding all the parameters and their effects, as well as using external gpus such as scitas to handle large datasets. The hardest part was to manipulate the data and get the model to work on a different data structure than intended by the authors. We didn't have enough time to train our models as much as we planned to, but the code is capable of computing the 3D pose estimation from a video which was the initial goal.
+Overall, our model does not perform as well as the one from the original paper. This could be due to too short trainings for the RootNet and PoseNet, or the use of only one dataset for training. The inference is also relatively slow, not making it very suitable for real-time applications such as autonomous driving. During this project, we learned to tune a deep learning model, understand all the parameters and their effects, as well as using external gpus such as scitas to handle large datasets. The hardest part was to manipulate the data and get the model to work on a different data structure than intended by the authors. We didn't have enough time to train our models as much as we planned to, but the code is capable of computing the 3D pose estimation from a video which was the initial goal.
 
 ## References
 
