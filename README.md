@@ -78,6 +78,8 @@ The implementation of the DETR architecture for DetectNet did not yield satsfyin
 
 Overall, our model does not perform as well as the one from the original paper. This could be due to too short trainings for the RootNet and PoseNet, or the use of only one dataset for training. The inference is also relatively slow, not making it very suitable for real-time applications such as autonomous driving. During this project, we learned to tune a deep learning model, understand all the parameters and their effects, as well as using external gpus such as scitas to handle large datasets. The hardest part was to manipulate the data and get the model to work on a different data structure than intended by the authors. We didn't have enough time to train our models as much as we planned to, but the code is capable of computing the 3D pose estimation from a video which was the initial goal.
 
+The YouTube video presentation can be watched with the following link: https://youtu.be/Ezb1yBvNWls
+
 ## References
 
 Original model data: https://paperswithcode.com/paper/camera-distance-aware-top-down-approach-for/review/?hl=57519
