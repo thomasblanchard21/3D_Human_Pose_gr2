@@ -4,6 +4,7 @@ from PIL import Image
 import requests
 import matplotlib.pyplot as plt
 #%config InlineBackend.figure_format = 'retina'
+import time
 
 import ipywidgets as widgets
 from IPython.display import display, clear_output
@@ -96,6 +97,8 @@ def plot_results(pil_img, prob, boxes):
     plt.show()
     
 model = torch.hub.load('facebookresearch/detr', 'detr_resnet50', pretrained=True)
+start_time = time.time()
+print(start_time)
 model.eval();
 
 img_path = str(args.frame)
@@ -127,5 +130,8 @@ img_name = img_path.split("/")[-1].split(".")[0]
 with open(f"bboxes/bbox_output_{img_name}.json", "w") as json_file:
     json.dump(python_list, json_file, indent=4)
 
+end_time = time.time()
+print(end_time)
 
+print(end_time - start_time)
 # plot_results(im, probas[keep], bboxes_scaled)
