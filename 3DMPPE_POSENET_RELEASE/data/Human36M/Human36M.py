@@ -17,7 +17,7 @@ class Human36M:
         self.data_split = data_split
         self.img_dir = "/work/scitas-share/datasets/Vita/civil-459/h3.6/videos/"
         self.annot_path = "/home/tblancha/DLAV/3DMPPE_ROOTNET_RELEASE/data/Human36M/annotations/"
-        self.human_bbox_root_dir = "/home/tblancha/DLAV/3DMPPE_ROOTNET_RELEASE/data/Human36M/bbox/bbox_root_human36m_output.json"
+        self.human_bbox_root_dir = "/home/tblancha/DLAV/3DMPPE_ROOTNET_RELEASE/data/Human36M/output/result/bbox_root_human36m_output.json"
         self.joint_num = 18 # original:17, but manually added 'Thorax'
         self.joints_name = ('Pelvis', 'R_Hip', 'R_Knee', 'R_Ankle', 'L_Hip', 'L_Knee', 'L_Ankle', 'Torso', 'Neck', 'Nose', 'Head', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'Thorax')
         self.flip_pairs = ( (1, 4), (2, 5), (3, 6), (14, 11), (15, 12), (16, 13) )
