@@ -1,5 +1,5 @@
 import math
-
+import argparse
 from PIL import Image
 import requests
 import matplotlib.pyplot as plt
@@ -14,6 +14,16 @@ from torchvision.models import resnet50
 import torchvision.transforms as T
 import json
 torch.set_grad_enabled(False);
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--frame', type=str, dest='frame')
+    args = parser.parse_args()
+
+    return args
+
+# argument parsing
+args = parse_args()
 
 # COCO classes
 CLASSES = [
@@ -88,7 +98,7 @@ def plot_results(pil_img, prob, boxes):
 model = torch.hub.load('facebookresearch/detr', 'detr_resnet50', pretrained=True)
 model.eval();
 
-img_path = "C:/Users/thoma/OneDrive/Documents/EPFL/MA2/Deep Learning for Autonomous Vehicles/DLAV/photo.jpg"
+img_path = str(args.frame)
 im = Image.open(img_path)
 
 # mean-std normalize the input image (batch-size: 1)
@@ -113,11 +123,9 @@ bboxes_scaled = rescale_bboxes(person_boxes, im.size)
 bboxes_scaled_for_json = rescale_bboxes_wh(person_boxes, im.size)
 numpy_array = bboxes_scaled_for_json.numpy()
 python_list = numpy_array.tolist()
-with open("3DMPPE_POSENET_RELEASE/data/Human36M/bbox/bbox_human36m_output.json", "w") as json_file:
+img_name = img_path.split("/")[-1].split(".")[0]
+with open(f"bboxes/bbox_output_{img_name}.json", "w") as json_file:
     json.dump(python_list, json_file, indent=4)
 
-with open("3DMPPE_ROOTNET_RELEASE/data/Human36M/bbox/bbox_human36m_output.json", "w") as json_file:
-    json.dump(python_list, json_file, indent=4)
 
-
-plot_results(im, probas[keep], bboxes_scaled)
+# plot_results(im, probas[keep], bboxes_scaled)
